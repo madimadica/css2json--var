@@ -17,32 +17,9 @@ public class Main {
             String fileName = cssPath.getFileName().toString();
             Map<String, String> colors = new HashMap<>();
             json.put(fileName.substring(0, fileName.length()-4), colors);
-
             String text = Files.readString(cssPath);
-            int rootIndex = text.indexOf(":root");
-            char[] textChars = text.toCharArray();
-            int depth = 0;
-            int start = -1;
-            int end = -1;
-            for (int i = rootIndex + ":root".length(), LUB = textChars.length; i < LUB; ++i) {
-                char c = textChars[i];
-                if (c == '{') {
-                    if (depth == 0) {
-                        start = i;
-                    }
-                    depth++;
-                }
-                if (c == '}') {
-                    if (depth == 1) {
-                        end = i;
-                        break;
-                    }
-                    depth--;
-                }
-            }
-            String rootStyles = text.substring(start + 1, end).trim();
-            String[] properties = rootStyles.split(";");
-            for (String property : properties) {
+
+            for (String property : getProperties(text)) {
                 property = property.trim();
                 if (!property.startsWith("--")) {
                     continue;
@@ -74,6 +51,33 @@ public class Main {
 
 
         System.out.println(json);
+    }
+
+    public static String[] getProperties(String text) {
+        int rootIndex = text.indexOf(":root");
+        char[] textChars = text.toCharArray();
+        int depth = 0;
+        int start = -1;
+        int end = -1;
+        for (int i = rootIndex + ":root".length(), LUB = textChars.length; i < LUB; ++i) {
+            char c = textChars[i];
+            if (c == '{') {
+                if (depth == 0) {
+                    start = i;
+                }
+                depth++;
+            }
+            if (c == '}') {
+                if (depth == 1) {
+                    end = i;
+                    break;
+                }
+                depth--;
+            }
+        }
+        String rootStyles = text.substring(start + 1, end).trim();
+        String[] properties = rootStyles.split(";");
+        return properties;
     }
 
 }
