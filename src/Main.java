@@ -67,7 +67,7 @@ public class Main {
                         System.err.println("Warning, property " + varProperty + " is not found yet");
                         continue;
                     }
-                    colors.put(key, mappedValue);
+                    colors.put(jsonColorKey, mappedValue);
                 }
             }
         }
